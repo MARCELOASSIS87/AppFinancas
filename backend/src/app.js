@@ -10,6 +10,11 @@ const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`, JSON.stringify(req.body));
+  next();
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/categories', categoryRoutes);
