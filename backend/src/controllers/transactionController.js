@@ -5,13 +5,13 @@ async function create(req, res) {
 
   const transaction = await prisma.transaction.create({
     data: {
-      userId: req.userId,
+      userId: Number(req.userId),
       date: new Date(date),
       description,
-      categoryId,
+      categoryId: Number(categoryId),
       amount,
       status,
-      paymentMethodId: paymentMethodId || null,
+      paymentMethodId: paymentMethodId ? Number(paymentMethodId) : null,
       notes: notes || null,
     },
     include: { category: true, paymentMethod: true },
@@ -45,10 +45,10 @@ async function update(req, res) {
     data: {
       ...(date && { date: new Date(date) }),
       ...(description !== undefined && { description }),
-      ...(categoryId !== undefined && { categoryId }),
+      ...(categoryId !== undefined && { categoryId: Number(categoryId) }),
       ...(amount !== undefined && { amount }),
       ...(status !== undefined && { status }),
-      ...(paymentMethodId !== undefined && { paymentMethodId: paymentMethodId || null }),
+      ...(paymentMethodId !== undefined && { paymentMethodId: paymentMethodId ? Number(paymentMethodId) : null }),
       ...(notes !== undefined && { notes: notes || null }),
     },
     include: { category: true, paymentMethod: true },
