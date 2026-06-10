@@ -8,10 +8,10 @@ async function create(req, res) {
       userId: Number(req.userId),
       date: new Date(date),
       description,
-      categoryId: Number(categoryId),
       amount,
       status,
-      paymentMethodId: paymentMethodId ? Number(paymentMethodId) : null,
+      category: { connect: { id: Number(categoryId) } },
+      paymentMethod: paymentMethodId ? { connect: { id: Number(paymentMethodId) } } : undefined,
       notes: notes || null,
     },
     include: { category: true, paymentMethod: true },
@@ -45,10 +45,14 @@ async function update(req, res) {
     data: {
       ...(date && { date: new Date(date) }),
       ...(description !== undefined && { description }),
-      ...(categoryId !== undefined && { categoryId: Number(categoryId) }),
+      ...(categoryId !== undefined && { category: { connect: { id: Number(categoryId) } } }),
       ...(amount !== undefined && { amount }),
       ...(status !== undefined && { status }),
-      ...(paymentMethodId !== undefined && { paymentMethodId: paymentMethodId ? Number(paymentMethodId) : null }),
+      ...(paymentMethodId !== undefined && {
+        paymentMethod: paymentMethodId
+          ? { connect: { id: Number(paymentMethodId) } }
+          : { disconnect: true },
+      }),
       ...(notes !== undefined && { notes: notes || null }),
     },
     include: { category: true, paymentMethod: true },
