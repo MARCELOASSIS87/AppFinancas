@@ -5,7 +5,7 @@ async function create(req, res) {
 
   const transaction = await prisma.transaction.create({
     data: {
-      userId: Number(req.userId),
+      user: { connect: { id: Number(req.userId) } },
       date: new Date(date),
       description,
       amount,
