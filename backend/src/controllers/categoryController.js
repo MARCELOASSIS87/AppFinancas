@@ -8,13 +8,13 @@ async function list(req, res) {
 }
 
 async function create(req, res) {
-  const { name, isDefault } = req.body;
+  const { name, type, isDefault } = req.body;
 
   const existing = await prisma.category.findUnique({ where: { name } });
   if (existing) return res.status(400).json({ error: 'Categoria já existe' });
 
   const category = await prisma.category.create({
-    data: { name, isDefault: isDefault ?? false },
+    data: { name, type, isDefault: isDefault ?? false },
   });
 
   return res.status(201).json(category);

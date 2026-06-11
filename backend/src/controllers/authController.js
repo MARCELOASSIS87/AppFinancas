@@ -25,7 +25,7 @@ async function login(req, res) {
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) return res.status(401).json({ error: 'Credenciais inválidas' });
 
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1095d' });
 
   return res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
 }

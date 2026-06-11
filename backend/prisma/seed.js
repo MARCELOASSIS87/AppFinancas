@@ -16,32 +16,41 @@ const adapter = new PrismaMariaDb({
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  const categories = [
-    'Alimentação', 'Transporte', 'Saúde', 'Moradia', 'Vestuário/Roupas',
-    'Veículo/Combustível', 'Veículo/Seguro', 'Veículo/Financiamento', 'Veículo/GPS',
-    'Telefonia/Internet', 'Energia', 'Água', 'Dividas', 'Compras',
-    'Presentes/Lazer', 'Salário', 'Renda', 'Serviço recorrente', 'Serviços',
-    'Hospedagem/Servidor', 'Cabelo', 'Saldo Inicial'
+  const despesas = [
+    'Mercado',
+    'Alimentação fora',
+    'Carro',
+    'Transporte app',
+    'Moradia',
+    'Saúde',
+    'Cuidados pessoais',
+    'Vestuário',
+    'Lazer/Presentes',
+    'Dívidas',
+    'Serviços',
+    'Investimento',
   ];
 
-  for (const name of categories) {
+  for (const name of despesas) {
     await prisma.category.upsert({
       where: { name },
       update: {},
-      create: { name, isDefault: true },
+      create: { name, type: 'despesa', isDefault: true },
     });
   }
 
-  const paymentMethods = [
-    'Santander', 'Verocard', 'Alelo', 'Pix', 'Pix automático santander',
-    'Cartão de Débito', 'Cartão de Crédito', 'Dinheiro', 'Ether.fi'
+  const receitas = [
+    'Salário',
+    'Renda',
+    'Vale',
+    'Outros',
   ];
 
-  for (const name of paymentMethods) {
-    await prisma.paymentMethod.upsert({
+  for (const name of receitas) {
+    await prisma.category.upsert({
       where: { name },
       update: {},
-      create: { name },
+      create: { name, type: 'receita', isDefault: true },
     });
   }
 
