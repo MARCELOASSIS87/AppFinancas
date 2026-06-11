@@ -19,7 +19,6 @@ async function create(req, res) {
 
 async function list(req, res) {
   const transactions = await prisma.transaction.findMany({
-    where: { userId: req.userId },
     orderBy: { date: 'desc' },
     include: { category: true },
   });
@@ -28,8 +27,8 @@ async function list(req, res) {
 
 async function update(req, res) {
   const { id } = req.params;
-  const existing = await prisma.transaction.findFirst({
-    where: { id: Number(id), userId: req.userId },
+  const existing = await prisma.transaction.findUnique({
+    where: { id: Number(id) },
   });
   if (!existing) return res.status(404).json({ error: 'Transação não encontrada' });
   const { date, description, amount, categoryId, recorrente, status } = req.body;
@@ -50,8 +49,8 @@ async function update(req, res) {
 
 async function remove(req, res) {
   const { id } = req.params;
-  const existing = await prisma.transaction.findFirst({
-    where: { id: Number(id), userId: req.userId },
+  const existing = await prisma.transaction.findUnique({
+    where: { id: Number(id) },
   });
   if (!existing) return res.status(404).json({ error: 'Transação não encontrada' });
   await prisma.transaction.delete({ where: { id: Number(id) } });
