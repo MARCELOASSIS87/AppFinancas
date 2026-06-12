@@ -1,10 +1,24 @@
-version: '3.8'
 services:
   backend:
     build: ./backend
     container_name: appfinancas-backend
     restart: always
-    ports:
-      - "3000:3000"
     env_file:
       - ./backend/.env
+    networks:
+      - root_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=root_default"
+      - "traefik.http.routers.appfinancas.rule=Host(`apifinancas.locapocos.com.br`)"
+      - "traefik.http.routers.appfinancas.entrypoints=web,websecure"
+      - "traefik.http.routers.appfinancas.tls=true"
+      - "traefik.http.routers.appfinancas.tls.certresolver=mytlschallenge"
+      - "traefik.http.routers.appfinancas.middlewares=appfinancas-force-https"
+      - "traefik.http.middlewares.appfinancas-force-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.appfinancas-force-https.redirectscheme.permanent=true"
+      - "traefik.http.services.appfinancas.loadbalancer.server.port=3000"
+
+networks:
+  root_default:
+    external: true
