@@ -7,32 +7,53 @@ datasource db {
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  name         String
-  email        String        @unique
-  passwordHash String
-  createdAt    DateTime      @default(now())
-  transactions Transaction[]
+  id                    Int                    @id @default(autoincrement())
+  name                  String
+  email                 String                 @unique
+  passwordHash          String
+  createdAt             DateTime               @default(now())
+  transactions          Transaction[]
+  recurringTransactions RecurringTransaction[]
 }
 
 model Category {
+  id                    Int                    @id @default(autoincrement())
+  name                  String                 @unique
+  type                  String
+  isDefault             Boolean                @default(false)
+  transactions          Transaction[]
+  recurringTransactions RecurringTransaction[]
+}
+
+model RecurringTransaction {
   id           Int           @id @default(autoincrement())
-  name         String        @unique
-  type         String
-  isDefault    Boolean       @default(false)
+  userId       Int
+  description  String
+  amount       Decimal       @db.Decimal(10, 2)
+  categoryId   Int
+  frequency    String        // "mensal" ou "semanal"
+  dayOfMonth   Int?          // se mensal: dia do mês (1-31)
+  dayOfWeek    Int?          // se semanal: 0=domingo, 1=segunda, ..., 6=sábado
+  startDate    DateTime
+  endDate      DateTime
+  createdAt    DateTime      @default(now())
+  user         User          @relation(fields: [userId], references: [id])
+  category     Category      @relation(fields: [categoryId], references: [id])
   transactions Transaction[]
 }
 
 model Transaction {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  date        DateTime
-  description String
-  amount      Decimal  @db.Decimal(10, 2)
-  categoryId  Int
-  recorrente  String
-  status      String
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id])
-  category    Category @relation(fields: [categoryId], references: [id])
+  id           Int                   @id @default(autoincrement())
+  userId       Int
+  date         DateTime
+  description  String
+  amount       Decimal               @db.Decimal(10, 2)
+  categoryId   Int
+  recorrente   String
+  status       String
+  recurringId  Int?
+  createdAt    DateTime              @default(now())
+  user         User                  @relation(fields: [userId], references: [id])
+  category     Category              @relation(fields: [categoryId], references: [id])
+  recurring    RecurringTransaction? @relation(fields: [recurringId], references: [id], onDelete: SetNull)
 }
