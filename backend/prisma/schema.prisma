@@ -57,3 +57,14 @@ model Transaction {
   category     Category              @relation(fields: [categoryId], references: [id])
   recurring    RecurringTransaction? @relation(fields: [recurringId], references: [id], onDelete: SetNull)
 }
+
+model Ride {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  driver    String   // "Teinha" ou "Arnaldo"
+  period    String   // "manha" ou "tarde"
+  type      String   // "normal", "especial" ou "nao_foi"
+  route     String?  // trajeto especial, ex: "Casa - Josi - Ataíde" (só quando type=especial)
+  value     Decimal  @db.Decimal(10, 2) // 10, 15, 20 ou 0 conforme regras
+  createdAt DateTime @default(now())
+}
